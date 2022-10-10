@@ -42,9 +42,7 @@ class Event extends BaseModel
         $slot_start_time = $this->opening_time;
         $total_time_taken_per_slot = ($this->session_duration ?? 0) + ($this->break_duration ?? 0);
         $breaks = $this->breaks;
-        //echo $slot_start_time.PHP_EOL;
-        //echo $this->closing_time.PHP_EOL;
-        //dd();
+        
         $slotTime = strtotime($slot_start_time);
         $slotTimeHour = date('H:i',$slotTime);
         
@@ -52,7 +50,7 @@ class Event extends BaseModel
         $bookingTimeHour = date('H:i',$bookingTime);
         
         while($slot_start_time < $this->closing_time){
-            //echo $slotTimeHour.'----'.$bookingTimeHour;
+            
             if($slotTimeHour == $bookingTimeHour && $this->checkBreakSafe($breaks, $book_time)){
                 return true;
             }
