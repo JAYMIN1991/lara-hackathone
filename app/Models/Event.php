@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Booking;
 
 class Event extends BaseModel
 {
@@ -33,6 +34,15 @@ class Event extends BaseModel
         return $event;
     }
 
+    public function checkMaxBooking($event){
+        $event = Event::find($event['event_id']);
+        $bookingCount = Booking::where('event_id',$event['event_id'])->count();
+        if($bookingCount == $event->max_bookings){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * This function checks if selected slot is valid for selected event
      * @param $book_time string Time in H:i:s format
@@ -50,8 +60,7 @@ class Event extends BaseModel
         $bookingTimeHour = date('H:i',$bookingTime);
         
         while($slot_start_time < $this->closing_time){
-            
-            if($slotTimeHour == $bookingTimeHour && $this->checkBreakSafe($breaks, $book_time)){
+            if($slotTimeHour <= $bookingTimeHour && $bookingTimeHour < $this->closing_time && $this->checkBreakSafe($breaks, $book_time)){
                 return true;
             }
             $slot_start_time = date('H:i:s', strtotime('+'.$total_time_taken_per_slot.' minutes', strtotime($slot_start_time)));

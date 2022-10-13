@@ -29,6 +29,9 @@ class Booking extends BaseModel
             return 'Invalid date slot selected';
         }
 
+        if(!$event->checkMaxBooking($event)){
+            return 'Booking slot over';
+        }
         if(!$event->checkValidDateForEvent($booking_date))
             return 'Booking cannot be done for this date';
 
